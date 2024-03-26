@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Sefaria Linker",
+  "version": "1.0",
+  "description": "Add links to sefaria for any Torah reference on the page.",
+  "permissions": ["scripting"],
+  "web_accessible_resources": [
+    {
+      "resources": ["js/linker.v3.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["sefaria_linker.js"]
+    }
+  ]
+}
