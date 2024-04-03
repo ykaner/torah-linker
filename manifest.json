@@ -3,7 +3,6 @@
   "name": "Sefaria Linker",
   "version": "1.0",
   "description": "Add links to sefaria for any Torah reference on the page.",
-  "permissions": ["scripting"],
   "web_accessible_resources": [
     {
       "resources": ["js/linker.v3.js"],
@@ -15,5 +14,11 @@
       "matches": ["<all_urls>"],
       "js": ["sefaria_linker.js"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
 }
