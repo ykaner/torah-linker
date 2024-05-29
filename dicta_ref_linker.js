@@ -1,4 +1,21 @@
 import { Readability, isProbablyReaderable } from "@mozilla/readability";
+import $ from "jquery";
+
+
+function injectHtmlAtSubstring(element, substring, htmlToInject) {
+    var $element = $(element);
+    var content = $element.html();
+    var position = content.indexOf(substring);
+
+    if (position !== -1) {
+        var beforeSubstring = content.substring(0, position);
+        var afterSubstring = content.substring(position + substring.length);
+
+        var newContent = beforeSubstring + substring + htmlToInject + afterSubstring;
+
+        $element.html(newContent);
+    }
+}
 
 
 async function dicta_ref_linker() {
@@ -33,6 +50,14 @@ async function dicta_ref_linker() {
     const parallels = data.results[0].data;
     for (let par of parallels) {
         console.log(par);
+        var elements = $(`:contains(${par.baseMatchedText})` );
+        var lowestElements = elements.filter(function() {
+            return $(this).find(`:contains(${par.baseMatchedText})`).length === 0;
+        });
+        lowestElements.each(function() {
+            injectHtmlAtSubstring(this, par.baseMatchedText, '<span class="highlight">Injected HTML</span>');
+        })
+
     }
     console.log('all done');
     this.alert(parallels.length);
