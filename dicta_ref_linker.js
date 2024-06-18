@@ -7,20 +7,22 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
     var content = $element.html();
     var position = content.indexOf(substring);
 
-    if (position !== -1) {
-        var beforeSubstring = content.substring(0, position);
-        var afterSubstring = content.substring(position + substring.length);
-
-        var newContent = beforeSubstring + substring + htmlToInject + afterSubstring;
-
-        $element.html(newContent);
+    if (position === -1) {
+        console.log("Failed injecting HTML, cannot find: ", substring);
+        return;
     }
+    var beforeSubstring = content.substring(0, position);
+    var afterSubstring = content.substring(position + substring.length);
+
+    var newContent = beforeSubstring + substring + htmlToInject + afterSubstring;
+
+    $element.html(newContent);
 }
 
 
 async function dicta_ref_linker() {
     const doc = window.document.cloneNode(true);
-    if ( !isProbablyReaderable(doc) ) {
+    if (!isProbablyReaderable(doc)) {
         return;
     }
     const reader = new Readability(doc);
@@ -47,20 +49,23 @@ async function dicta_ref_linker() {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    const parallels = data.results[0].data;
-    for (let par of parallels) {
-        console.log(par);
-        var elements = $(`:contains(${par.baseMatchedText})` );
+    let parallels = data.results[0].data;
+    parallels = Object.groupBy(parallels, par => par.baseMatchedText);
+    for (let key in parallels) {
+        let par = parallels[key][0];
+        var elements = $(`:contains(${par.baseMatchedText})`);
         var lowestElements = elements.filter(function() {
             return $(this).find(`:contains(${par.baseMatchedText})`).length === 0;
         });
         lowestElements.each(function() {
-            injectHtmlAtSubstring(this, par.baseMatchedText, '<span class="highlight">Injected HTML</span>');
-        })
+            injectHtmlAtSubstring(
+                this, par.baseMatchedText, `<a href=${par.url}>[*להרחבה]</a>`
+            );
+        });
 
     }
     console.log('all done');
-    this.alert(parallels.length);
+    alert(Object.keys(parallels).length);
 }
 
 
