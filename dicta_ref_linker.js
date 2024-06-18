@@ -20,7 +20,7 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
 }
 
 
-async function dicta_ref_linker() {
+function parse_text() {
     const doc = window.document.cloneNode(true);
     if (!isProbablyReaderable(doc)) {
         return;
@@ -28,10 +28,13 @@ async function dicta_ref_linker() {
     const reader = new Readability(doc);
     const parsed = reader.parse();
     console.log(parsed);
-    if (parsed.lang != 'he'){
-        return;
+    if (parsed.lang == 'he' || !parsed.lang) {
+        return parsed.textContent;
     }
-    const text = parsed.textContent;
+    return undefined;
+}
+
+async function fetch_parallels(text) {
     const response = await fetch(
         "https://parallels-2-1.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=10&maxdistance=4", {
         headers: {
@@ -49,7 +52,12 @@ async function dicta_ref_linker() {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    let parallels = data.results[0].data;
+    return data.results[0].data;
+}
+
+async function dicta_ref_linker() {
+    const text = parse_text();
+    let parallels = fetch_parallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
     for (let key in parallels) {
         let par = parallels[key][0];
