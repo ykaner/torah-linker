@@ -57,7 +57,10 @@ async function fetch_parallels(text) {
 
 async function dicta_ref_linker() {
     const text = parse_text();
-    let parallels = fetch_parallels(text);
+    if (text === undefined) {
+        return;
+    }
+    let parallels = await fetch_parallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
     for (let key in parallels) {
         let par = parallels[key][0];
