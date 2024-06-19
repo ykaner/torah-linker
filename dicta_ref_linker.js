@@ -27,8 +27,7 @@ function parse_text() {
     }
     const reader = new Readability(doc);
     const parsed = reader.parse();
-    console.log(parsed);
-    if (parsed.lang == 'he' || !parsed.lang) {
+    if (!parsed.lang || parsed.lang.includes('he')) {
         return parsed.textContent;
     }
     return undefined;
@@ -62,6 +61,7 @@ async function dicta_ref_linker() {
     }
     let parallels = await fetch_parallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
+    let injectedLinksCount = 0;
     for (let key in parallels) {
         let par = parallels[key][0];
         var elements = $(`:contains(${par.baseMatchedText})`);
@@ -70,13 +70,16 @@ async function dicta_ref_linker() {
         });
         lowestElements.each(function() {
             injectHtmlAtSubstring(
-                this, par.baseMatchedText, `<a href=${par.url}>[*להרחבה]</a>`
+                this, par.baseMatchedText,
+                `<a href=${par.url} target="_blank" rel="noopener noreferrer">[*להרחבה]</a>`
             );
+            injectedLinksCount++;
         });
 
     }
-    console.log('all done');
-    alert(Object.keys(parallels).length);
+    console.log(
+        `all done, found: ${Object.keys(parallels).length} parallels, injected ${injectedLinksCount} links`
+    );
 }
 
 
