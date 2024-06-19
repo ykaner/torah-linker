@@ -54,7 +54,7 @@ async function fetchParallels(text) {
     return data.results[0].data;
 }
 
-async function dictaRefLinker() {
+export async function dictaRefLinker() {
     const text = parseText();
     if (text === undefined) {
         return;
@@ -81,8 +81,3 @@ async function dictaRefLinker() {
         `all done, found: ${Object.keys(parallels).length} parallels, injected ${injectedLinksCount} links`
     );
 }
-
-
-window.addEventListener('load', function () {
-    dictaRefLinker();
-})

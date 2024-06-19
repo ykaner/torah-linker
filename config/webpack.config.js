@@ -3,7 +3,7 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    content: './dicta_ref_linker.js',
+    content: './main.js',
   },
 
   output: {
