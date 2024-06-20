@@ -9,7 +9,7 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
 
     if (position === -1) {
         console.log("Failed injecting HTML, cannot find: ", substring);
-        return;
+        return false;
     }
     var beforeSubstring = content.substring(0, position);
     var afterSubstring = content.substring(position + substring.length);
@@ -17,6 +17,7 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
     var newContent = beforeSubstring + substring + htmlToInject + afterSubstring;
 
     $element.html(newContent);
+    return true;
 }
 
 
@@ -69,11 +70,13 @@ export async function dictaRefLinker() {
             return $(this).find(`:contains(${par.baseMatchedText})`).length === 0;
         });
         lowestElements.each(function() {
-            injectHtmlAtSubstring(
+            const success = injectHtmlAtSubstring(
                 this, par.baseMatchedText,
                 `<a href=${par.url} target="_blank" rel="noopener noreferrer">[*להרחבה]</a>`
             );
-            injectedLinksCount++;
+            if (success) {
+                injectedLinksCount++;
+            }
         });
 
     }
