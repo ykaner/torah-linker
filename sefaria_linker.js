@@ -1,8 +1,8 @@
+import { linkerFunction } from "./js/linker.v3";
 
-async function sefariaLinker() {
-    const linkerScriptUrl = chrome.runtime.getURL('js/linker.v3.js');
-    const linker = await import(linkerScriptUrl);
-    linker.linkerFunction();
+
+export async function sefariaLinker() {
+    linkerFunction();
     sefaria.link({
         mode: 'popup-click',
         contentLang: "hebrew",
