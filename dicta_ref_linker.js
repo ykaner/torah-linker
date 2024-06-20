@@ -9,7 +9,7 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
 
     if (position === -1) {
         console.log("Failed injecting HTML, cannot find: ", substring);
-        return;
+        return false;
     }
     var beforeSubstring = content.substring(0, position);
     var afterSubstring = content.substring(position + substring.length);
@@ -17,10 +17,11 @@ function injectHtmlAtSubstring(element, substring, htmlToInject) {
     var newContent = beforeSubstring + substring + htmlToInject + afterSubstring;
 
     $element.html(newContent);
+    return true;
 }
 
 
-function parse_text() {
+function parseText() {
     const doc = window.document.cloneNode(true);
     if (!isProbablyReaderable(doc)) {
         return;
@@ -33,7 +34,7 @@ function parse_text() {
     return undefined;
 }
 
-async function fetch_parallels(text) {
+async function fetchParallels(text) {
     const response = await fetch(
         "https://parallels-2-1.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=10&maxdistance=4", {
         headers: {
@@ -54,12 +55,12 @@ async function fetch_parallels(text) {
     return data.results[0].data;
 }
 
-async function dicta_ref_linker() {
-    const text = parse_text();
+export async function dictaRefLinker() {
+    const text = parseText();
     if (text === undefined) {
         return;
     }
-    let parallels = await fetch_parallels(text);
+    let parallels = await fetchParallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
     let injectedLinksCount = 0;
     for (let key in parallels) {
@@ -69,11 +70,13 @@ async function dicta_ref_linker() {
             return $(this).find(`:contains(${par.baseMatchedText})`).length === 0;
         });
         lowestElements.each(function() {
-            injectHtmlAtSubstring(
+            const success = injectHtmlAtSubstring(
                 this, par.baseMatchedText,
                 `<a href=${par.url} target="_blank" rel="noopener noreferrer">[*להרחבה]</a>`
             );
-            injectedLinksCount++;
+            if (success) {
+                injectedLinksCount++;
+            }
         });
 
     }
@@ -81,8 +84,3 @@ async function dicta_ref_linker() {
         `all done, found: ${Object.keys(parallels).length} parallels, injected ${injectedLinksCount} links`
     );
 }
-
-
-window.addEventListener('load', function () {
-    dicta_ref_linker();
-})
