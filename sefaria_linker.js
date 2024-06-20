@@ -1,8 +1,8 @@
-import { linkerFunction } from "./js/linker.v3";
+import { linkerV3Function } from "./sefaria_linker.v3/main";
 
 
 export async function sefariaLinker() {
-    linkerFunction();
+    linkerV3Function();
     sefaria.link({
         mode: 'popup-click',
         contentLang: "hebrew",

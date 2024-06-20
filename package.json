@@ -1,7 +1,10 @@
 {
   "dependencies": {
     "@mozilla/readability": "^0.5.0",
+    "dompurify": "^3.1.5",
+    "draggabilly": "^3.0.0",
     "extension-cli": "^1.2.4",
+    "findandreplacedomtext": "^0.4.6",
     "jquery": "^3.7.1",
     "rollup-plugin-chrome-extension": "^3.6.12",
     "webpack": "^5.91.0"
