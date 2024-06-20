@@ -1,5 +1,6 @@
-import { Readability, isProbablyReaderable } from "@mozilla/readability";
 import $ from "jquery";
+import { Readability, isProbablyReaderable } from "@mozilla/readability";
+import findAndReplaceDOMText from 'findandreplacedomtext';
 
 
 function injectHtmlAtSubstring(element, substring, htmlToInject) {
@@ -65,20 +66,24 @@ export async function dictaRefLinker() {
     let injectedLinksCount = 0;
     for (let key in parallels) {
         let par = parallels[key][0];
-        var elements = $(`:contains(${par.baseMatchedText})`);
-        var lowestElements = elements.filter(function() {
-            return $(this).find(`:contains(${par.baseMatchedText})`).length === 0;
-        });
-        lowestElements.each(function() {
-            const success = injectHtmlAtSubstring(
-                this, par.baseMatchedText,
-                `<a href=${par.url} target="_blank" rel="noopener noreferrer">[*להרחבה]</a>`
-            );
-            if (success) {
+        findAndReplaceDOMText(document, {
+            preset: 'prose',
+            find: par.baseMatchedText,
+            replace: function(portion, match) {
+                if (!portion.isEnd) {
+                    return portion.text;
+                }
+                let atag = document.createElement("a");
+                atag.href = par.url;
+                atag.target = "_blank";
+                atag.textContent = "[*להרחבה]";
+                let node = document.createElement("span");
+                node.innerText = portion.text;
+                node.appendChild(atag);
                 injectedLinksCount++;
+                return node;
             }
         });
-
     }
     console.log(
         `all done, found: ${Object.keys(parallels).length} parallels, injected ${injectedLinksCount} links`
