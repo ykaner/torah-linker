@@ -9,11 +9,3 @@ window.addEventListener('load', function () {
 window.addEventListener('load', function () {
     sefariaLinker();
 });
-
-window.addEventListener('keydown', function(event) {
-    if (event.altKey && event.key === 'r') {
-        console.log('Alt+R was pressed');
-        dictaRefLinker();
-        sefariaLinker();
-    }
-});
