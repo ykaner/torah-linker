@@ -59,10 +59,10 @@ async function fetchParallels(text) {
     return data.results[0].data;
 }
 
-function chooseOldestSource(parallels) {
-    // TODO: This is choosing arbitrary. need to choose the best i.e. oldest.
+function chooseBestSource(parallels) {
+    // TODO: This is choosing by `sortOrder`. need to choose the oldest.
     for (const key in parallels) {
-        parallels[key] = parallels[key][0];
+        parallels[key] = parallels[key].sort((a, b) => a.sortOrder - b.sortOrder)[0];
     }
     return parallels;
 }
@@ -129,7 +129,7 @@ export async function dictaRefLinker() {
     }
     let parallels = await fetchParallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
-    parallels = chooseOldestSource(parallels); //TODO: This is a lie a placeholder
+    parallels = chooseBestSource(parallels);
     parallels = await fetchSefariaSourceDataForParallels(parallels);
     let injectedLinksCount = 0;
     for (const key in parallels) {
