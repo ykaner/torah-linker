@@ -150,9 +150,6 @@ export async function dictaRefLinker() {
                 node.innerText = portion.text;
                 node.appendChild(atag);
                 if (par.sefariaSourceData) {
-                    node.className = 'sefaria-ref-wrapper';
-                    atag.className = "sefaria-ref";
-                    atag.setAttribute('aria-controls', 'sefaria-popup');
                     dictaRL.popupManager.bindEventHandler(atag, url.origin, par.sefariaSourceData);
                 }
                 injectedLinksCount++;
