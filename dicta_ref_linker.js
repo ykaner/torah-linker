@@ -146,7 +146,7 @@ export async function dictaRefLinker() {
                 let atag = document.createElement("a");
                 atag.href = url;
                 atag.target = "_blank";
-                atag.textContent = "[*להרחבה]";
+                atag.textContent = "[*]";
                 let node = document.createElement("span");
                 node.innerText = portion.text;
                 node.appendChild(atag);
