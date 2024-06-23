@@ -16,7 +16,6 @@ function parseText() {
     const parsed = reader.parse();
     if (!parsed.lang || parsed.lang.includes('he')) {
         return parsed.textContent;
-        return removeNonHebrewText(parsed.textContent);
     }
     return undefined;
 }
