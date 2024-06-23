@@ -2,7 +2,6 @@ import $ from "jquery";
 import { Readability, isProbablyReaderable } from "@mozilla/readability";
 import findAndReplaceDOMText from 'findandreplacedomtext';
 import { PopupManager } from "./sefaria_linker.v3/popup";
-import { linkerV3Function } from "./sefaria_linker.v3/main";
 
 
 window.dictaRL = {}
@@ -124,7 +123,6 @@ function popupSetup() {
 }
 
 export async function dictaRefLinker() {
-    linkerV3Function();
     popupSetup();
     const text = parseText();
     if (text === undefined) {
