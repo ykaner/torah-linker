@@ -289,7 +289,7 @@ export class PopupManager {
         this.linkerHeader.style["border-top-color"] = this.category_colors[primaryCategory];
 
         // TODO is this right?
-        if (this.contentLang !== "he") {
+        if (this.contentLang.slice(0, 2) !== "he") {
             // [].forEach.call(heElems, function(e) {e.style.display = "None"});
             this.heTitle.style.display = "None";
             [].forEach.call(this.enElems, function(e) {e.style.display = "Block"});
@@ -298,14 +298,14 @@ export class PopupManager {
             [].forEach.call(this.enElems, function(e) {e.style.display = "None"});
         }
 
-        if (typeof(en) === "string") {
+        if (typeof(en) !== "object") {
             en = [en]
+        }
+        if (typeof(he) !== "object") {
             he = [he]
         }
-        if (typeof(en) === "object") {
-            en = [].concat.apply([], en);
-            he = [].concat.apply([], he);
-        }
+        en = [].concat.apply([], en);
+        he = [].concat.apply([], he);
 
         for (let i = 0; i < Math.max(en.length, he.length); i++) {
             let enBox = document.createElement('div');
@@ -413,6 +413,9 @@ export class PopupManager {
             elem.addEventListener('mouseout', this.hidePopup, false);
         } else if (this.mode === "popup-click") {
             elem.addEventListener('click', (event) => {
+                if (event.ctrlKey) {
+                    return;
+                }
                 event.preventDefault();
                 event.stopPropagation();
                 this.showPopup(elem, source);
