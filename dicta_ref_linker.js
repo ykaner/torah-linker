@@ -28,12 +28,19 @@ function urlify(url) {
     if (url.startsWith('//')) {
         url = 'https://' + url.slice(2);
     }
-    return new URL(url);
+    try {
+        return new URL(url);
+    } catch (TypeError) {
+        return undefined;
+    }
 }
 
 
 function isSefariaRef(url) {
     url = urlify(url);
+    if (url === undefined) {
+        return false;
+    }
     return url.hostname.includes('sefaria');
 }
 
@@ -135,6 +142,9 @@ export async function dictaRefLinker() {
     for (const key in parallels) {
         let par = parallels[key];
         let url = urlify(par.url);
+        if (url === undefined) {
+            continue;
+        }
         findAndReplaceDOMText(document, {
             preset: 'prose',
             find: par.baseMatchedText,
