@@ -111,7 +111,7 @@ async function fetchSefariaSourceDataForParallels(parallels) {
             })();
         }
     });
-    const results = await Promise.all(promises);
+    const results = await Promise.all(promises.filter(p => p !== undefined));
     results.forEach(({key, sefariaSourceData}) => {
         parallels[key].sefariaSourceData = sefariaSourceData;
     });
