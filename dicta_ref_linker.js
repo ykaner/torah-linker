@@ -47,7 +47,7 @@ function isSefariaRef(url) {
 
 async function fetchParallels(text) {
     const response = await fetch(
-        "https://parallels-2-1.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=10&maxdistance=4", {
+        "https://parallels-2-2.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=10&maxdistance=4&tanakhMinScore=1.9", {
         headers: {
             "accept": "application/json, text/plain, */*",
             "content-type": "application/x-www-form-urlencoded"
@@ -67,9 +67,8 @@ async function fetchParallels(text) {
 }
 
 function chooseBestSource(parallels) {
-    // TODO: This is choosing by `sortOrder`. need to choose the oldest.
     for (const key in parallels) {
-        parallels[key] = parallels[key].sort((a, b) => a.sortOrder - b.sortOrder)[0];
+        parallels[key] = parallels[key][0];
     }
     return parallels;
 }

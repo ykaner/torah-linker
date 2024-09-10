@@ -1,2 +1,6 @@
 node_modules/
 build/
+
+# Ignore vim
+*.sw[po]
+
