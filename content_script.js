@@ -33,6 +33,4 @@ const titleObserver = new MutationObserver(() => {
     }
 
 });
-titleObserver.observe($document.querySelector('title'), { childList: true, characterData: true, subtree: true });
-
-
+titleObserver.observe(window.document.querySelector('title'), { childList: true, characterData: true, subtree: true });
