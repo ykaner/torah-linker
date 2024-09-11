@@ -75,6 +75,7 @@ function chooseBestSource(parallels) {
 
 
 async function fetchSefariaSourceData(ref) {
+    // TODO: Consider removing it. It is heavy and actually I only use `primary_category`
     const options = { method: 'GET', headers: { accept: 'application/json' } };
     const response = await fetch('https://www.sefaria.org/api/v3/texts' + ref, options)
         .then(response => response.json())
@@ -85,7 +86,6 @@ async function fetchSefariaSourceData(ref) {
         en: [],
         he: [],
         primaryCategory: response.primary_category,
-        isTruncated: false
     };
     for (let version of response.versions) {
         if (version.language === 'he') {
@@ -106,6 +106,7 @@ async function fetchSefariaSourceDataForParallels(parallels) {
             return (async function () {
                 let sefariaSourceData = await fetchSefariaSourceData(url.pathname);
                 sefariaSourceData.url = url.pathname.slice(1);
+                sefariaSourceData.he = [par.compMatchedText];
                 return {key, sefariaSourceData};
             })();
         }
@@ -159,7 +160,10 @@ export async function dictaRefLinker() {
                 node.innerText = portion.text;
                 node.appendChild(atag);
                 if (par.sefariaSourceData) {
-                    dictaRL.popupManager.bindEventHandler(atag, url.origin, par.sefariaSourceData);
+                    const scrollToRange = {index: par.compStartChar, length: par.compTextLength}
+                    dictaRL.popupManager.bindEventHandler(
+                        atag, url.origin, par.sefariaSourceData, scrollToRange
+                    );
                 }
                 injectedLinksCount++;
                 return node;
