@@ -159,7 +159,10 @@ export async function dictaRefLinker() {
                 node.innerText = portion.text;
                 node.appendChild(atag);
                 if (par.sefariaSourceData) {
-                    dictaRL.popupManager.bindEventHandler(atag, url.origin, par.sefariaSourceData);
+                    dictaRL.popupManager.bindEventHandler(
+                        atag, url.origin, par.sefariaSourceData,
+                        {scrollToStartIndex: par.compStartChar, scrollToLength: par.compTextLength}
+                    );
                 }
                 injectedLinksCount++;
                 return node;

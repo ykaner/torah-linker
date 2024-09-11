@@ -281,7 +281,39 @@ export class PopupManager {
         }
     };
 
-    showPopup(elem, {ref, heRef, en=[], he=[], primaryCategory, isTruncated=false}) {
+    focusOn(startIndex, length) {
+        const treeWalker = document.createTreeWalker(
+            this.textBox, NodeFilter.SHOW_TEXT, null, false
+        );
+
+        let currentNode;
+        let foundRange = null;
+        while ((currentNode = treeWalker.nextNode())) {
+            if (startIndex <= currentNode.textContent.length) {
+                foundRange = document.createRange();
+                foundRange.setStart(currentNode, startIndex);
+                foundRange.setEnd(currentNode, startIndex + length);
+                break;
+            }
+            startIndex -= currentNode.textContent.length;
+        }
+
+        if (foundRange) {
+            const rect = foundRange.getBoundingClientRect();
+            const popupRect = this.textBox.getBoundingClientRect();
+            const scrollTop = rect.top - popupRect.top + this.textBox.scrollTop - this.textBox.clientHeight / 2 + rect.height / 2;
+            this.textBox.scrollTo({
+                top: scrollTop,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    showPopup(
+        elem,
+        {ref, heRef, en=[], he=[], primaryCategory, isTruncated=false}, 
+        {scrollToStartIndex=undefined, scrollToLength=undefined},
+    ) {
         while (this.textBox.firstChild) {
             this.textBox.removeChild(this.textBox.firstChild);
         }
@@ -392,6 +424,9 @@ export class PopupManager {
             }
         }
 
+        if (scrollToStartIndex) {
+            this.focusOn(scrollToStartIndex, scrollToLength);
+        }
     }
 
     hidePopup() {
@@ -403,13 +438,13 @@ export class PopupManager {
         this.popUpElem.style.height = "auto";
     }
 
-    bindEventHandler(elem, baseUrl, source) {
+    bindEventHandler(elem, baseUrl, source, scrollToRange) {
         const utmSource = window.location.hostname ? window.location.hostname.replace(/^www\./, "") : "(not%20set)";
         const urlLang = this.contentLang.substring(0, 2);
         const url = `${baseUrl}/${source.url}?lang=${urlLang}&utm_source=${utmSource}&utm_medium=sefaria_linker`;
         elem.setAttribute('href', url);
         if (this.mode === "popup-hover") {
-            elem.addEventListener('mouseover', (event) => { this.showPopup(elem, source); }, false);
+            elem.addEventListener('mouseover', (event) => { this.showPopup(elem, source, scrollToRange); }, false);
             elem.addEventListener('mouseout', this.hidePopup, false);
         } else if (this.mode === "popup-click") {
             elem.addEventListener('click', (event) => {
@@ -418,7 +453,7 @@ export class PopupManager {
                 }
                 event.preventDefault();
                 event.stopPropagation();
-                this.showPopup(elem, source);
+                this.showPopup(elem, source, scrollToRange);
                 document.getElementById("sefaria-linker-text").focus();
             }, false);
         }
