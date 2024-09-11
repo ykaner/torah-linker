@@ -159,9 +159,9 @@ export async function dictaRefLinker() {
                 node.innerText = portion.text;
                 node.appendChild(atag);
                 if (par.sefariaSourceData) {
+                    const scrollToRange = {index: par.compStartChar, length: par.compTextLength}
                     dictaRL.popupManager.bindEventHandler(
-                        atag, url.origin, par.sefariaSourceData,
-                        {scrollToStartIndex: par.compStartChar, scrollToLength: par.compTextLength}
+                        atag, url.origin, par.sefariaSourceData, scrollToRange
                     );
                 }
                 injectedLinksCount++;

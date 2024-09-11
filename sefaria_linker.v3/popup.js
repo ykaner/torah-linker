@@ -322,7 +322,7 @@ export class PopupManager {
     showPopup(
         elem,
         {ref, heRef, en=[], he=[], primaryCategory, isTruncated=false},
-        {scrollToStartIndex=undefined, scrollToLength=undefined},
+        scrollToRange=undefined,
     ) {
         while (this.textBox.firstChild) {
             this.textBox.removeChild(this.textBox.firstChild);
@@ -434,8 +434,8 @@ export class PopupManager {
             }
         }
 
-        if (scrollToStartIndex) {
-            this.focusOn(scrollToStartIndex, scrollToLength);
+        if (scrollToRange) {
+            this.focusOn(scrollToRange.index, scrollToRange.length);
         }
     }
 
