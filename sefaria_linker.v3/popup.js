@@ -1,4 +1,5 @@
 import Draggabilly from 'draggabilly';
+import findAndReplaceDOMText from 'findandreplacedomtext';
 
 export class PopupManager {
     constructor({ mode, interfaceLang, contentLang, popupStyles, debug, reportCitation }) {
@@ -281,6 +282,14 @@ export class PopupManager {
         }
     };
 
+    _makeTextBold(node, substring) {
+        findAndReplaceDOMText(node, {
+            preset: 'prose',
+            find: substring,
+            wrap: 'b'
+        })
+    }
+
     focusOn(startIndex, length) {
         const treeWalker = document.createTreeWalker(
             this.textBox, NodeFilter.SHOW_TEXT, null, false
@@ -306,12 +315,13 @@ export class PopupManager {
                 top: scrollTop,
                 behavior: 'smooth'
             });
+            this._makeTextBold(currentNode, currentNode.textContent.slice(startIndex, startIndex+length))
         }
     }
 
     showPopup(
         elem,
-        {ref, heRef, en=[], he=[], primaryCategory, isTruncated=false}, 
+        {ref, heRef, en=[], he=[], primaryCategory, isTruncated=false},
         {scrollToStartIndex=undefined, scrollToLength=undefined},
     ) {
         while (this.textBox.firstChild) {
