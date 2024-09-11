@@ -85,7 +85,7 @@ async function fetchSefariaSourceData(ref) {
         en: [],
         he: [],
         primaryCategory: response.primary_category,
-        isTruncated: false
+        isTruncated: true
     };
     for (let version of response.versions) {
         if (version.language === 'he') {
