@@ -66,6 +66,7 @@ async function fetchParallels(text) {
     return data.results[0].data;
 }
 
+
 function chooseBestSource(parallels) {
     for (const key in parallels) {
         parallels[key] = parallels[key][0];
@@ -74,47 +75,25 @@ function chooseBestSource(parallels) {
 }
 
 
-async function fetchSefariaSourceData(ref) {
-    // TODO: Consider removing it. It is heavy and actually I only use `primary_category`
-    const options = { method: 'GET', headers: { accept: 'application/json' } };
-    const response = await fetch('https://www.sefaria.org/api/v3/texts' + ref, options)
-        .then(response => response.json())
-        .catch(err => console.error(err));
-    let sourceData = {
-        ref: response.ref,
-        heRef: response.heRef,
-        en: [],
-        he: [],
-        primaryCategory: response.primary_category,
-    };
-    for (let version of response.versions) {
-        if (version.language === 'he') {
-            sourceData.he = version.text;
-        }
-        if (version.language === 'en') {
-            sourceData.en = version.text;
-        }
-    }
-    return sourceData;
-}
-
-
-async function fetchSefariaSourceDataForParallels(parallels) {
-    const promises = Object.entries(parallels).map(([key, par]) => {
+function adjustSefariaSourceDataForParallels(parallels) {
+    for (const key in parallels) {
+        let par = parallels[key];
         const url = urlify(par.url);
         if (isSefariaRef(url)) {
-            return (async function () {
-                let sefariaSourceData = await fetchSefariaSourceData(url.pathname);
-                sefariaSourceData.url = url.pathname.slice(1);
-                sefariaSourceData.he = [par.compMatchedText];
-                return {key, sefariaSourceData};
-            })();
+            if (par.compBookXmlId.split('.')[0].toLowerCase() == 'sefaria') {
+                par.compBookXmlId = par.compBookXmlId.split('.').slice(1).join('.');
+            }
+            const bookRefLen = par.compBookXmlId.split('.').length;
+            par.sefariaSourceData = {
+                ref: par.compBookXmlId,
+                heRef: par.compNameHe.split(':').slice(bookRefLen - 1).join(':'),
+                en: [],
+                he: [par.compMatchedText],
+                url: url.pathname.slice(1),
+                primaryCategory: par.compBookXmlId.split('.')[0],
+            };
         }
-    });
-    const results = await Promise.all(promises.filter(p => p !== undefined));
-    results.forEach(({key, sefariaSourceData}) => {
-        parallels[key].sefariaSourceData = sefariaSourceData;
-    });
+    }
     return parallels;
 }
 
@@ -137,7 +116,7 @@ export async function dictaRefLinker() {
     let parallels = await fetchParallels(text);
     parallels = Object.groupBy(parallels, par => par.baseMatchedText);
     parallels = chooseBestSource(parallels);
-    parallels = await fetchSefariaSourceDataForParallels(parallels);
+    parallels = adjustSefariaSourceDataForParallels(parallels);
     let injectedLinksCount = 0;
     for (const key in parallels) {
         let par = parallels[key];

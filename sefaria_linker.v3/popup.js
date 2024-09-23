@@ -1,6 +1,7 @@
 import Draggabilly from 'draggabilly';
 import findAndReplaceDOMText from 'findandreplacedomtext';
 
+
 export class PopupManager {
     constructor({ mode, interfaceLang, contentLang, popupStyles, debug, reportCitation }) {
         this.mode = mode;
@@ -301,7 +302,7 @@ export class PopupManager {
             if (startIndex <= currentNode.textContent.length) {
                 foundRange = document.createRange();
                 foundRange.setStart(currentNode, startIndex);
-                foundRange.setEnd(currentNode, startIndex + length);
+                foundRange.setEnd(currentNode, Math.min(startIndex + length, currentNode.textContent.length));
                 break;
             }
             startIndex -= currentNode.textContent.length;
