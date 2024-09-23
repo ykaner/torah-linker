@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Torah Linker",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Add links to sefaria for any Torah reference on the page.",
   "web_accessible_resources": [
     {
