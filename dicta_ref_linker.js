@@ -98,6 +98,10 @@ function adjustSefariaSourceDataForParallels(parallels) {
 }
 
 
+function clearParallels() {
+    $(".torah-linker-parallel").remove();
+}
+
 function popupSetup() {
     dictaRL.popupManager = new PopupManager({
         mode: 'popup-click', 
@@ -108,6 +112,7 @@ function popupSetup() {
 }
 
 export async function dictaRefLinker() {
+    clearParallels();
     popupSetup();
     const text = parseText();
     if (text === undefined) {
@@ -132,6 +137,7 @@ export async function dictaRefLinker() {
                     return portion.text;
                 }
                 let atag = document.createElement("a");
+                atag.classList.add("torah-linker-parallel");
                 atag.href = url;
                 atag.target = "_blank";
                 atag.textContent = "[*]";
