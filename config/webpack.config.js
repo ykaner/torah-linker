@@ -1,13 +1,12 @@
 const path = require('path');
 
-
 module.exports = {
   entry: {
-    content: './content_script.js',
+    content_script: './content_script.js',
+    popup: './popup.js'
   },
-
   output: {
-    filename: 'content_script.js',
+    filename: '[name].bundle.js',
     path: path.resolve(__dirname, '../build')
-  },
+  }
 };

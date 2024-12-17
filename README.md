@@ -4,7 +4,7 @@ Available at chrome web store: https://chromewebstore.google.com/detail/sefaria-
 # Build
 Build for development
 ```bash
-webpack --config config/webpack.config.js --mode development -d inline-source-map
+webpack --watch --config config/webpack.config.js --mode development -d inline-source-map
 ```
 Build for production
 ```sh

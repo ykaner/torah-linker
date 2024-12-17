@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Torah Linker Settings</title>
+    <style>
+        body {
+            width: 300px;
+            padding: 15px;
+            font-family: Arial, sans-serif;
+        }
+        .slider-container {
+            margin-bottom: 20px;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        .slider {
+            width: 100%;
+        }
+        .value-display {
+            font-weight: bold;
+        }
+        button {
+            width: 100%;
+            padding: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .reset-btn {
+            background-color: #f44336;
+        }
+        .reset-btn:hover {
+            background-color: #da190b;
+        }
+        .explanation {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body dir="rtl">
+    <h2>הגדרות של Torah Linker</h2>
+    <div class="explanation">
+        <p>
+            רמת דיוק נמוכה - מזהה יותר קישורים<br>
+            רמת דיוק גבוהה - מזהה פחות קישורים
+        </p>
+    </div>
+    <div class="slider-container">
+        <div class="slider-label">
+            <span>רמת דיוק:</span>
+            <span class="value-display" id="minThresholdValue">10</span>
+        </div>
+        <input type="range" id="minThreshold" class="slider" min="7" max="20" step="1" value="10">
+    </div>
+
+    <div class="slider-container">
+        <div class="slider-label">
+            <span>רמת דיוק תנך:</span>
+            <span class="value-display" id="tanakhMinScoreValue">2</span>
+        </div>
+        <input type="range" id="tanakhMinScore" class="slider" min="0" max="5" step="0.1" value="2">
+    </div>
+
+    <button id="saveButton">שמור הגדרות</button>
+    <button id="resetButton" class="reset-btn">איפוס להגדרות ברירת מחדל</button>
+
+    <script src="build/popup.bundle.js"></script>
+</body>
+</html>

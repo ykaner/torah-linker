@@ -2,10 +2,9 @@ import $ from "jquery";
 import { Readability, isProbablyReaderable } from "@mozilla/readability";
 import findAndReplaceDOMText from 'findandreplacedomtext';
 import { PopupManager } from "./sefaria_linker.v3/popup";
-
+import { getConfig } from './config.js';
 
 window.dictaRL = {}
-
 
 function parseText() {
     const doc = window.document.cloneNode(true);
@@ -19,7 +18,6 @@ function parseText() {
     }
     return undefined;
 }
-
 
 function urlify(url) {
     if (typeof(url) != 'string') {
@@ -35,7 +33,6 @@ function urlify(url) {
     }
 }
 
-
 function isSefariaRef(url) {
     url = urlify(url);
     if (url === undefined) {
@@ -44,10 +41,10 @@ function isSefariaRef(url) {
     return url.hostname.includes('sefaria');
 }
 
-
 async function fetchParallels(text) {
+    const config = await getConfig();
     const response = await fetch(
-        "https://parallels-2-2.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=10&maxdistance=4&tanakhMinScore=1.9", {
+        `https://parallels-2-2.loadbalancer.dicta.org.il/parallels/api/findincorpus?minthreshold=${config.minThreshold}&maxdistance=${config.maxDistance}&tanakhMinScore=${config.tanakhMinScore}`, {
         headers: {
             "accept": "application/json, text/plain, */*",
             "content-type": "application/x-www-form-urlencoded"
@@ -66,14 +63,12 @@ async function fetchParallels(text) {
     return data.results[0].data;
 }
 
-
 function chooseBestSource(parallels) {
     for (const key in parallels) {
         parallels[key] = parallels[key][0];
     }
     return parallels;
 }
-
 
 function adjustSefariaSourceDataForParallels(parallels) {
     for (const key in parallels) {
@@ -96,7 +91,6 @@ function adjustSefariaSourceDataForParallels(parallels) {
     }
     return parallels;
 }
-
 
 function clearParallels() {
     $(".torah-linker-parallel").remove();
