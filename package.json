@@ -6,6 +6,7 @@
     "extension-cli": "^1.2.4",
     "findandreplacedomtext": "^0.4.6",
     "jquery": "^3.7.1",
+    "p-retry": "^6.2.1",
     "rollup-plugin-chrome-extension": "^3.6.12",
     "webpack": "^5.91.0"
   },
